@@ -39,7 +39,11 @@ public class Player : MonoBehaviour
         
         otherTransform.SetParent(transform);
         otherTransform.position = transform.position + transform.forward * pickDst;
-        
-        
+    }
+    
+    public void Detach(Transform parent)
+    {
+        PickedObject?.pickTransform.SetParent(parent);
+        PickedObject = null;
     }
 }

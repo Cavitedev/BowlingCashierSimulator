@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ShelfBox : MonoBehaviour
 {
@@ -10,9 +11,17 @@ public class ShelfBox : MonoBehaviour
     
     private Renderer _renderer;
 
+
+    private int _shoeCount = 0;
+    [FormerlySerializedAs("leftTransforms")] [SerializeField] private Transform[] restTransforms;
+    private Pickable[] _restPickables;
+    
+    
+    
     public void Start()
     {
         _renderer = GetComponent<Renderer>();
+        _restPickables = new Pickable[restTransforms.Length];
         SetMaterial(false);
     }
 
@@ -43,8 +52,40 @@ public class ShelfBox : MonoBehaviour
     public void OnPointerClick()
     {
 
-        Debug.Log("Click");
 
+        
+        if (Player.Instance.IsPicking())
+        {
+            Pickable pickedObject = Player.Instance.PickedObject;
+            if (_shoeCount < restTransforms.Length)
+            {
+                Transform restTransform = restTransforms[_shoeCount];
+                _restPickables[_shoeCount] = pickedObject;
+                Player.Instance.Detach(restTransform);
+                pickedObject.pickTransform.SetPositionAndRotation(restTransform.position, restTransform.rotation);
+                pickedObject.OnPointerExit();
+                pickedObject.enabled = false;
+                _shoeCount++;
+            }
+        }
+        else
+        {
+            if (_shoeCount > 0)
+            {
+                _shoeCount--;
+                Pickable pickedObject = _restPickables[_shoeCount];
+                Transform restTransform = restTransforms[_shoeCount];
+                Player.Instance.Attach(pickedObject);
+                pickedObject.pickTransform.SetPositionAndRotation(restTransform.position, restTransform.rotation);
+                pickedObject.enabled = true;
+
+            }
+        }
+        
+
+        CircleLoader.Instance.ExitPick();
+        Debug.Log("Click");
+        
 
         // transform.SetParent(Player.Instance.transform);
     }

@@ -54,10 +54,8 @@ public class Pickable : MonoBehaviour
         {
             return;
         }
+        CircleLoader.Instance.ExitPick();
         // Debug.Log("Click");
-
-
-
         Player.Instance.Attach(this);
         _collider.enabled = false;
         // transform.SetParent(Player.Instance.transform);
@@ -71,6 +69,7 @@ public class Pickable : MonoBehaviour
     public void OnDetach()
     {
         _collider.enabled = true;
+
     }
 
     /// <summary>
