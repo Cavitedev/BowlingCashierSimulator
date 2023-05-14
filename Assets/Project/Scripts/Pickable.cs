@@ -5,7 +5,7 @@ public class Pickable : MonoBehaviour
 {
     public Transform pickTransform;
 
-    public Vector3 defaultPos;
+    [HideInInspector] public Vector3 defaultPos;
 
     private void Start()
     {
