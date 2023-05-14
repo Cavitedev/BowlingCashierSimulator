@@ -1,29 +1,24 @@
 using UnityEngine;
 
-public class Pickable : MonoBehaviour
+public class ShelfBox : MonoBehaviour
 {
 
     public Material inactiveMaterial;
     public Material gazedAtMaterial;
-    public Transform pickTransform;
+
     
     
     private Renderer _renderer;
-    private BoxCollider _collider;
 
     public void Start()
     {
         _renderer = GetComponent<Renderer>();
-        _collider = GetComponent<BoxCollider>();
         SetMaterial(false);
     }
 
     public void OnPointerEnter()
     {
-        if (Player.Instance.IsPicking(this))
-        {
-            return;
-        }
+
         Debug.Log("Enter");
         SetMaterial(true);
         CircleLoader.Instance.Pick(gameObject);
@@ -34,12 +29,9 @@ public class Pickable : MonoBehaviour
     /// </summary>
     public void OnPointerExit()
     {
-        if (Player.Instance.IsPicking(this))
-        {
-            return;
-        }
+
         
-        // Debug.Log("Exit");
+        Debug.Log("Exit");
         SetMaterial(false);
         CircleLoader.Instance.ExitPick();
     }
@@ -50,28 +42,14 @@ public class Pickable : MonoBehaviour
     /// </summary>
     public void OnPointerClick()
     {
-        if (Player.Instance.IsPicking(this))
-        {
-            return;
-        }
-        // Debug.Log("Click");
+
+        Debug.Log("Click");
 
 
-
-        Player.Instance.Attach(this);
-        _collider.enabled = false;
         // transform.SetParent(Player.Instance.transform);
     }
 
-    public void OnAttach()
-    {
-        _collider.enabled = false;
-    }
 
-    public void OnDetach()
-    {
-        _collider.enabled = true;
-    }
 
     /// <summary>
     /// Sets this instance's material according to gazedAt status.

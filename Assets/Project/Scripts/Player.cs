@@ -9,16 +9,36 @@ public class Player : MonoBehaviour
     public static Player Instance;
     private bool _pickingSth;
     public float pickDst = 1f;
+
+    private Pickable _pickedObject;
+
+    public Pickable PickedObject
+    {
+        get => _pickedObject;
+        private set
+        {
+            _pickedObject?.OnDetach();
+            
+            _pickedObject = value;
+            _pickedObject?.OnAttach();
+        }
+    }
     
     private void Awake()
     {
         Instance = this;
     }
 
-    public void Attach(Transform otherTransform,  Vector3 center)
+    public bool IsPicking() => _pickedObject != null;
+    public bool IsPicking(Pickable pickable) => _pickedObject == pickable;
+    
+    public void Attach(Pickable pickable)
     {
+        PickedObject = pickable;
+        Transform otherTransform = pickable.pickTransform;
+        
         otherTransform.SetParent(transform);
-        otherTransform.position = transform.position + transform.forward * pickDst + center;
+        otherTransform.position = transform.position + transform.forward * pickDst;
         
         
     }
