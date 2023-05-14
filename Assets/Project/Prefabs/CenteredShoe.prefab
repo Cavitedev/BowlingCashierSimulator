@@ -316,5 +316,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64205b495214a0e49ad0ad279f6686c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shoeNumber: 39
+  shoeSize: 39
   tmPro: {fileID: 1368231668848524016}
+  selfbox: {fileID: 0}
+  mainObject: {fileID: 8596516318918556222}

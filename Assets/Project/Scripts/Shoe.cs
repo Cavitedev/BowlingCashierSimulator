@@ -3,14 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Shoe : MonoBehaviour
 {
-    public int shoeNumber;
+    [FormerlySerializedAs("shoeNumber")] [SerializeField] private int shoeSize;
     public TextMeshPro tmPro;
 
+    [SerializeField] private ShelfBox selfbox;
+    [SerializeField] private GameObject mainObject;
+    
+
+    public void SetShoeSize(int number)
+    {
+        shoeSize = number;
+        tmPro.SetText(number.ToString());
+    }
+    
     private void OnValidate()
     {
-        tmPro.SetText(shoeNumber.ToString());
+        SetShoeSize(shoeSize);
     }
+
+    public void Destroy()
+    {
+        selfbox.restPickable = null;
+        Destroy(mainObject);
+    }
+    
 }

@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3986252631888769775}
     m_Modifications:
+    - target: {fileID: 488372951173552380, guid: bb5a42b36f8c99b4b819b5e08af5a304, type: 3}
+      propertyPath: selfbox
+      value: 
+      objectReference: {fileID: 3986252633395372855}
     - target: {fileID: 8596516318918556222, guid: bb5a42b36f8c99b4b819b5e08af5a304, type: 3}
       propertyPath: m_Name
       value: CenteredShoe
@@ -134,3 +138,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7956097667756755299, guid: afe2691b0ac361d49a22c14729c79d10, type: 3}
   m_PrefabInstance: {fileID: 6429942946837478284}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &3986252633395372855 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7956097666301663419, guid: afe2691b0ac361d49a22c14729c79d10, type: 3}
+  m_PrefabInstance: {fileID: 6429942946837478284}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8cb6c5094142be8d0d3b14ccc621dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
