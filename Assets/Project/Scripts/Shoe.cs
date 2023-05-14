@@ -18,6 +18,7 @@ public class Shoe : MonoBehaviour
     {
         shoeSize = number;
         tmPro.SetText(number.ToString());
+        transform.localScale =  new Vector3(1, (number / 39f), 1) ;
     }
     
     private void OnValidate()
