@@ -29,6 +29,14 @@ public class Player : MonoBehaviour
         Instance = this;
     }
 
+    private void Update()
+    {
+        if (IsPicking())
+        {
+            PickedObject.pickTransform.rotation = Quaternion.LookRotation(transform.forward);
+        }
+    }
+
     public bool IsPicking() => _pickedObject != null;
     public bool IsPicking(Pickable pickable) => _pickedObject == pickable;
     

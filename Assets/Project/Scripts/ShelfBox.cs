@@ -74,9 +74,7 @@ public class ShelfBox : MonoBehaviour
             {
                 _shoeCount--;
                 Pickable pickedObject = _restPickables[_shoeCount];
-                Transform restTransform = restTransforms[_shoeCount];
                 Player.Instance.Attach(pickedObject);
-                pickedObject.pickTransform.SetPositionAndRotation(restTransform.position, restTransform.rotation);
                 pickedObject.enabled = true;
 
             }
