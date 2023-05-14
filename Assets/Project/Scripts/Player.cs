@@ -9,7 +9,8 @@ public class Player : MonoBehaviour
     public static Player Instance;
     private bool _pickingSth;
     public float pickDst = 1f;
-
+    public float minifyingFactor = 5f;
+    
     private Pickable _pickedObject;
 
     public Pickable PickedObject
@@ -17,10 +18,9 @@ public class Player : MonoBehaviour
         get => _pickedObject;
         private set
         {
-            _pickedObject?.OnDetach();
-            
+
             _pickedObject = value;
-            _pickedObject?.OnAttach();
+
         }
     }
     
@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
     {
         if (IsPicking())
         {
+            Debug.Log("Picking");
             PickedObject.pickTransform.rotation = Quaternion.LookRotation(transform.forward);
         }
     }
@@ -47,11 +48,17 @@ public class Player : MonoBehaviour
         
         otherTransform.SetParent(transform);
         otherTransform.position = transform.position + transform.forward * pickDst;
+        otherTransform.localScale /= minifyingFactor;
     }
     
     public void Detach(Transform parent)
     {
-        PickedObject?.pickTransform.SetParent(parent);
+        if (PickedObject.pickTransform != null)
+        {
+            PickedObject.pickTransform.SetParent(parent, true);
+            PickedObject.pickTransform.localScale *= minifyingFactor;
+        }
+
         PickedObject = null;
     }
 }
