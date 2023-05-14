@@ -33,12 +33,13 @@ public class Player : MonoBehaviour
     {
         if (IsPicking())
         {
-            Debug.Log("Picking");
             PickedObject.pickTransform.rotation = Quaternion.LookRotation(transform.forward);
         }
     }
 
     public bool IsPicking() => _pickedObject != null;
+    
+
     public bool IsPicking(Pickable pickable) => _pickedObject == pickable;
     
     public void Attach(Pickable pickable)

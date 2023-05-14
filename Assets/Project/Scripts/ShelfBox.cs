@@ -24,7 +24,11 @@ public class ShelfBox : MonoBehaviour
 
     public void OnPointerEnter()
     {
-        Debug.Log("Enter");
+        if (!CanBeClicked())
+        {
+            return;
+        }
+
         SetMaterial(true);
         CircleLoader.Instance.Pick(gameObject);
     }
@@ -32,13 +36,18 @@ public class ShelfBox : MonoBehaviour
 
     public void OnPointerExit()
     {
-        Debug.Log("Exit");
+        if (!CanBeClicked())
+        {
+            return;
+        }
+
         SetMaterial(false);
         CircleLoader.Instance.ExitPick();
     }
 
     public void OnPointerClick()
     {
+
         if (Player.Instance.IsPicking())
         {
             Pickable pickedObject = Player.Instance.PickedObject;
@@ -49,7 +58,7 @@ public class ShelfBox : MonoBehaviour
                 pickedObject.pickTransform.rotation = restTransform.rotation;
                 pickedObject.pickTransform.localPosition = restPickable.defaultPos;
 
-                    
+
                 // pickedObject.pickTransform.SetPositionAndRotation(restTransform.position - restPickable.defaultPos, );
                 pickedObject.enabled = false;
             }
@@ -67,10 +76,11 @@ public class ShelfBox : MonoBehaviour
 
 
         CircleLoader.Instance.ExitPick();
-        Debug.Log("Click");
+    }
 
-
-
+    private bool CanBeClicked()
+    {
+        return (Player.Instance.IsPicking() && !HasPickable()) || (!Player.Instance.IsPicking() && HasPickable());
     }
 
 
