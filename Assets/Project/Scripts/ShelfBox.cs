@@ -2,16 +2,32 @@ using UnityEngine;
 
 public class ShelfBox : MonoBehaviour
 {
-    public Material inactiveMaterial;
-    public Material gazedAtMaterial;
+    [SerializeField] private Material inactiveMaterial;
+    [SerializeField] private Material gazedAtMaterial;
 
 
     private Renderer _renderer;
 
 
     public Transform restTransform;
-    public Pickable restPickable;
+    [SerializeField] private Pickable restPickable;
+    
+    public delegate void PickableChange(ShelfBox shelfbox);
 
+    public PickableChange OnPickableChange;
+    
+    public Pickable RestPickable
+    {
+        get { return restPickable; }
+        set
+        {
+            restPickable = value;
+            OnPickableChange?.Invoke(this);
+            
+            
+        }
+    }
+    
     public bool HasPickable() => restPickable != null;
 
     public void Start()
@@ -53,7 +69,7 @@ public class ShelfBox : MonoBehaviour
             Pickable pickedObject = Player.Instance.PickedObject;
             if (!HasPickable())
             {
-                restPickable = pickedObject;
+                RestPickable = pickedObject;
                 Player.Instance.Detach(restTransform);
                 pickedObject.pickTransform.rotation = restTransform.rotation;
                 pickedObject.pickTransform.localPosition = restPickable.defaultPos;
@@ -70,7 +86,7 @@ public class ShelfBox : MonoBehaviour
                 Pickable pickedObject = restPickable;
                 Player.Instance.Attach(pickedObject);
                 pickedObject.enabled = true;
-                restPickable = null;
+                RestPickable = null;
             }
         }
 
@@ -84,11 +100,17 @@ public class ShelfBox : MonoBehaviour
     }
 
 
-    private void SetMaterial(bool gazedAt)
+    public void SetMaterial(bool gazedAt)
     {
         if (inactiveMaterial != null && gazedAtMaterial != null)
         {
             _renderer.material = gazedAt ? gazedAtMaterial : inactiveMaterial;
         }
+    }
+
+    public void SetInactiveMaterial(Material material)
+    {
+        inactiveMaterial = material;
+        _renderer.material = material;
     }
 }

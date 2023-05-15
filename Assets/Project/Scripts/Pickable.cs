@@ -6,6 +6,7 @@ public class Pickable : MonoBehaviour
     public Transform pickTransform;
 
     [HideInInspector] public Vector3 defaultPos;
+    public Shoe shoe;
 
     private void Start()
     {

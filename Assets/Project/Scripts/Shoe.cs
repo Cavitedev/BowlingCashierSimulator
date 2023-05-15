@@ -12,8 +12,9 @@ public class Shoe : MonoBehaviour
 
     [SerializeField] private ShelfBox selfbox;
     [SerializeField] private GameObject mainObject;
-    
 
+
+    public int GetShoeSize() => shoeSize;
     public void SetShoeSize(int number)
     {
         shoeSize = number;
@@ -28,7 +29,7 @@ public class Shoe : MonoBehaviour
 
     public void Destroy()
     {
-        selfbox.restPickable = null;
+        selfbox.RestPickable = null;
         Destroy(mainObject);
     }
     

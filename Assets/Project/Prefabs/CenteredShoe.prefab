@@ -304,6 +304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pickTransform: {fileID: 8596516318918556223}
   defaultPos: {x: 0, y: 0, z: 0}
+  shoe: {fileID: 488372951173552380}
 --- !u!114 &488372951173552380
 MonoBehaviour:
   m_ObjectHideFlags: 0
