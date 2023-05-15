@@ -8,6 +8,9 @@ public class GiveBox : MonoBehaviour
     [SerializeField] private Material invalidMaterial;
     [SerializeField] private Material validMaterial;
 
+    [SerializeField] private GameObject customer;
+    
+    
     [SerializeField] private ShelfBox[] shelfBoxes;
 
     private int _sizeRequest;
@@ -21,6 +24,8 @@ public class GiveBox : MonoBehaviour
             {
                 CheckShelfbox(shelfbox);
             }
+            
+            customer.SetActive(IsRequestingShoe());
         }
     }
 
@@ -56,6 +61,8 @@ public class GiveBox : MonoBehaviour
             shelfbox.SetInactiveMaterial(validMaterial);
         }
     }
+
+    private bool IsRequestingShoe() => !NoShoeRequest();
 
     private bool NoShoeRequest()
     {
