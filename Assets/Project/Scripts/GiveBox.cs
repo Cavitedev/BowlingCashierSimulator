@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GiveBox : MonoBehaviour
 {
@@ -13,12 +15,24 @@ public class GiveBox : MonoBehaviour
     
     [SerializeField] private ShelfBox[] shelfBoxes;
 
+    [SerializeField] private float resetChanceToAppear = 10f;
+    [SerializeField] private float chanceToAppear = 10f;
+    [SerializeField] private float increasingChance = 1f;
+    [SerializeField] private float timeBetweenChecks = 1f;
+
+    [SerializeField] private TextMeshPro textShow;
+    
+    
     private int _sizeRequest;
     public int SizeRequest
     {
         get { return _sizeRequest; }
         set
         {
+            if (_sizeRequest == 0)
+            {
+                textShow.text = "";
+            }
             _sizeRequest = value;
             foreach (ShelfBox shelfbox in shelfBoxes)
             {
@@ -26,6 +40,7 @@ public class GiveBox : MonoBehaviour
             }
             
             customer.SetActive(IsRequestingShoe());
+            textShow.text = _sizeRequest.ToString();
         }
     }
 
@@ -39,6 +54,10 @@ public class GiveBox : MonoBehaviour
         {
             shelfbox.OnPickableChange += PickableChange;
         }
+
+        Invoke(nameof(ReappearRandomly), 0.5f);
+        
+        InvokeRepeating(nameof(CheckToAppear), 1f , timeBetweenChecks);
     }
     
     public void PickableChange(ShelfBox shelfBox)
@@ -77,10 +96,39 @@ public class GiveBox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        
         if (Input.GetKeyDown(KeyCode.A))
         {
-            SizeRequest = Random.Range(37, 41);
+            RequestShoe();
             Debug.Log($"Requesting {SizeRequest}");
         }
+    }
+
+    private void CheckToAppear()
+    {
+        if (IsRequestingShoe() || Player.Instance.IsLookingForward()) return;
+
+        ReappearRandomly();
+    }
+
+    private void ReappearRandomly()
+    {
+        float rngNumber = Random.Range(0, 100f);
+        Debug.Log($"RNG  num={rngNumber}, chance={chanceToAppear}");
+        if (rngNumber < chanceToAppear)
+        {
+            RequestShoe();
+        }
+        else
+        {
+            chanceToAppear *= (1 + increasingChance);
+        }
+    }
+
+    private void RequestShoe()
+    {
+        chanceToAppear = resetChanceToAppear;
+        SizeRequest = Random.Range(37, 41);
     }
 }

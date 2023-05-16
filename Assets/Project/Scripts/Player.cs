@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
     
     private void Awake()
     {
-        Instance = this;
+        Instance = this; 
     }
 
     private void Update()
@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
         {
             PickedObject.pickTransform.rotation = Quaternion.LookRotation(transform.forward);
         }
+
     }
 
     public bool IsPicking() => _pickedObject != null;
@@ -62,4 +63,6 @@ public class Player : MonoBehaviour
 
         PickedObject = null;
     }
+
+    public bool IsLookingForward() => transform.rotation.eulerAngles.y is >= 270 or <= 90;
 }
