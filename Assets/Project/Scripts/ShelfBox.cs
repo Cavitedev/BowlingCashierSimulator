@@ -7,7 +7,7 @@ public class ShelfBox : MonoBehaviour
 
 
     private Renderer _renderer;
-
+    [HideInInspector] public bool isCorrectlySet = false;
 
     public Transform restTransform;
     [SerializeField] private Pickable restPickable;
@@ -69,14 +69,7 @@ public class ShelfBox : MonoBehaviour
             Pickable pickedObject = Player.Instance.PickedObject;
             if (!HasPickable())
             {
-                RestPickable = pickedObject;
-                Player.Instance.Detach(restTransform);
-                pickedObject.pickTransform.rotation = restTransform.rotation;
-                pickedObject.pickTransform.localPosition = restPickable.defaultPos;
-
-
-                // pickedObject.pickTransform.SetPositionAndRotation(restTransform.position - restPickable.defaultPos, );
-                pickedObject.enabled = false;
+                LeavePickObjectOnShelfBox(pickedObject);
             }
         }
         else
@@ -93,6 +86,29 @@ public class ShelfBox : MonoBehaviour
 
         CircleLoader.Instance.ExitPick();
     }
+
+    public void LeavePickObjectOnShelfBox(Pickable pickedObject)
+    {
+        Player.Instance.Detach(restTransform);
+
+        RestPickable = pickedObject;
+        RestPickable.pickTransform.rotation = restTransform.rotation;
+        RestPickable.pickTransform.localPosition = restPickable.defaultPos;
+
+
+        // pickedObject.pickTransform.SetPositionAndRotation(restTransform.position - restPickable.defaultPos, );
+        RestPickable.enabled = false;
+
+
+ 
+    }
+    
+    public void RemovePickObjectOnShelfBox()
+    {
+        RestPickable.enabled = false;
+        ShoesGivenManager.Instance.AddShoe(RestPickable);
+    }
+
 
     private bool CanBeClicked()
     {

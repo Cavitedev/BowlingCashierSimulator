@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -29,11 +30,9 @@ public class GiveBox : MonoBehaviour
         get { return _sizeRequest; }
         set
         {
-            if (_sizeRequest == 0)
-            {
-                textShow.text = "";
-            }
+
             _sizeRequest = value;
+
             foreach (ShelfBox shelfbox in shelfBoxes)
             {
                 CheckShelfbox(shelfbox);
@@ -41,6 +40,11 @@ public class GiveBox : MonoBehaviour
             
             customer.SetActive(IsRequestingShoe());
             textShow.text = _sizeRequest.ToString();
+            
+            if (_sizeRequest == 0)
+            {
+                textShow.text = "";
+            }
         }
     }
 
@@ -67,17 +71,24 @@ public class GiveBox : MonoBehaviour
 
     public void CheckShelfbox(ShelfBox shelfbox)
     {
-
+        shelfbox.isCorrectlySet = false;
         if (NoShoeRequest())
         {
             shelfbox.SetInactiveMaterial(invisibleMaterial);
         }else if (IsInvalidShoe(shelfbox))
         {
             shelfbox.SetInactiveMaterial(invalidMaterial);
+
         }
         else
         {
             shelfbox.SetInactiveMaterial(validMaterial);
+            shelfbox.isCorrectlySet = true;
+        }
+
+        if (AreShoesRight())
+        {
+            LeaveWithShoes();
         }
     }
 
@@ -115,7 +126,7 @@ public class GiveBox : MonoBehaviour
     private void ReappearRandomly()
     {
         float rngNumber = Random.Range(0, 100f);
-        Debug.Log($"RNG  num={rngNumber}, chance={chanceToAppear}");
+        // Debug.Log($"RNG  num={rngNumber}, chance={chanceToAppear}");
         if (rngNumber < chanceToAppear)
         {
             RequestShoe();
@@ -130,5 +141,23 @@ public class GiveBox : MonoBehaviour
     {
         chanceToAppear = resetChanceToAppear;
         SizeRequest = Random.Range(37, 41);
+    }
+
+    private void LeaveWithShoes()
+    {
+        SizeRequest = 0;
+
+        for (int i = shelfBoxes.Length - 1; i >= 0; i--)
+        {
+            ShelfBox shelfBox = shelfBoxes[i];
+            shelfBox.SetInactiveMaterial(invisibleMaterial);
+            shelfBox.RemovePickObjectOnShelfBox();
+        }
+
+    }
+
+    public bool AreShoesRight()
+    {
+        return shelfBoxes.All(s => s.isCorrectlySet);
     }
 }
