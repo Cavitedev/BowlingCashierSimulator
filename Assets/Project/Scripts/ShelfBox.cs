@@ -89,9 +89,12 @@ public class ShelfBox : MonoBehaviour
 
     public void LeavePickObjectOnShelfBox(Pickable pickedObject)
     {
-        Player.Instance.Detach(restTransform);
-
+        Player.Instance.Detach();
         RestPickable = pickedObject;
+        pickedObject.pickTransform.SetParent(restTransform, true);
+        
+        
+        if (RestPickable == null) return;
         RestPickable.pickTransform.rotation = restTransform.rotation;
         RestPickable.pickTransform.localPosition = restPickable.defaultPos;
 
@@ -105,8 +108,9 @@ public class ShelfBox : MonoBehaviour
     
     public void RemovePickObjectOnShelfBox()
     {
+        ShoesGivenManager.Instance.AddShoeIntoPlayzone(RestPickable);
         RestPickable.enabled = false;
-        ShoesGivenManager.Instance.AddShoe(RestPickable);
+        RestPickable = null;
     }
 
 

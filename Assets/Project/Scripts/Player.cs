@@ -53,11 +53,11 @@ public class Player : MonoBehaviour
         otherTransform.localScale /= minifyingFactor;
     }
     
-    public void Detach(Transform parent)
+    public void Detach()
     {
-        if (PickedObject.pickTransform != null)
+        if (PickedObject?.pickTransform != null)
         {
-            PickedObject.pickTransform.SetParent(parent, true);
+
             PickedObject.pickTransform.localScale *= minifyingFactor;
         }
 

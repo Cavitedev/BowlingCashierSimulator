@@ -22,7 +22,17 @@ public class GiveBox : MonoBehaviour
     [SerializeField] private float timeBetweenChecks = 1f;
 
     [SerializeField] private TextMeshPro textShow;
-    
+
+    private bool _isReturningShoe;
+    public bool IsReturningShoe
+    {
+        get { return _isReturningShoe; }
+        set
+        {
+            _isReturningShoe = value;
+            ActivateCustome(IsCustomerThere());
+        }
+    }
     
     private int _sizeRequest;
     public int SizeRequest
@@ -38,7 +48,8 @@ public class GiveBox : MonoBehaviour
                 CheckShelfbox(shelfbox);
             }
             
-            customer.SetActive(IsRequestingShoe());
+            ActivateCustome(IsCustomerThere());
+
             textShow.text = _sizeRequest.ToString();
             
             if (_sizeRequest == 0)
@@ -72,27 +83,52 @@ public class GiveBox : MonoBehaviour
     public void CheckShelfbox(ShelfBox shelfbox)
     {
         shelfbox.isCorrectlySet = false;
-        if (NoShoeRequest())
-        {
-            shelfbox.SetInactiveMaterial(invisibleMaterial);
-        }else if (IsInvalidShoe(shelfbox))
-        {
-            shelfbox.SetInactiveMaterial(invalidMaterial);
 
+        if (_isReturningShoe)
+        {
+            if (shelfbox.HasPickable())
+            {
+                shelfbox.SetInactiveMaterial(invalidMaterial);
+            }
+            else
+            {
+                shelfbox.SetInactiveMaterial(validMaterial);
+                shelfbox.isCorrectlySet = true;
+            }
+            
+            if (AreShoesRight())
+            {
+                LeaveAfterPlay();
+            }
         }
         else
         {
-            shelfbox.SetInactiveMaterial(validMaterial);
-            shelfbox.isCorrectlySet = true;
-        }
+            if (NoShoeRequest())
+            {
+                shelfbox.SetInactiveMaterial(invisibleMaterial);
+            }else if (IsInvalidShoe(shelfbox))
+            {
+                shelfbox.SetInactiveMaterial(invalidMaterial);
 
-        if (AreShoesRight())
-        {
-            LeaveWithShoes();
+            }
+            else
+            {
+                shelfbox.SetInactiveMaterial(validMaterial);
+                shelfbox.isCorrectlySet = true;
+            }
+
+            if (AreShoesRight())
+            {
+                LeaveWithShoes();
+            }
         }
+        
+
     }
 
     private bool IsRequestingShoe() => !NoShoeRequest();
+
+    private bool IsCustomerThere() => IsRequestingShoe() || _isReturningShoe;
 
     private bool NoShoeRequest()
     {
@@ -118,7 +154,7 @@ public class GiveBox : MonoBehaviour
 
     private void CheckToAppear()
     {
-        if (IsRequestingShoe() || Player.Instance.IsLookingForward()) return;
+        if (IsCustomerThere() || Player.Instance.IsLookingForward()) return;
 
         ReappearRandomly();
     }
@@ -140,7 +176,24 @@ public class GiveBox : MonoBehaviour
     private void RequestShoe()
     {
         chanceToAppear = resetChanceToAppear;
-        SizeRequest = Random.Range(37, 41);
+        if (ShoesGivenManager.Instance.IsSomeoneReturningShoes())
+        {
+            Pickable[] pickables = ShoesGivenManager.Instance.PickablesToReturn();
+            IsReturningShoe = true;
+            for (int i = 0; i < shelfBoxes.Length; i++)
+            {
+                shelfBoxes[i].LeavePickObjectOnShelfBox(pickables[i]);
+                CheckShelfbox(shelfBoxes[i]);
+            }
+
+
+
+        }
+        else
+        {
+            SizeRequest = ShoesGivenManager.Instance.RandomSizeToRequest();
+        }
+        
     }
 
     private void LeaveWithShoes()
@@ -155,9 +208,31 @@ public class GiveBox : MonoBehaviour
         }
 
     }
+    
+    private void LeaveAfterPlay()
+    {
+        _isReturningShoe = false;
+        
+        for (int i = shelfBoxes.Length - 1; i >= 0; i--)
+        {
+            ShelfBox shelfBox = shelfBoxes[i];
+            shelfBox.SetInactiveMaterial(invisibleMaterial);
+        }
+        ActivateCustome(false);
+    }
+
 
     public bool AreShoesRight()
     {
         return shelfBoxes.All(s => s.isCorrectlySet);
+    }
+
+    private void ActivateCustome(bool isActive)
+    {
+        customer.SetActive(isActive);
+        foreach (ShelfBox shelfBox in shelfBoxes)
+        {
+            shelfBox.enabled = isActive;
+        }
     }
 }

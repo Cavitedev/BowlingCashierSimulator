@@ -10,7 +10,14 @@ public class Shelf : MonoBehaviour
     [SerializeField] private int actualTotal = 0;
 
     
-    [SerializeField] private ShoeSizeAndAmount[] sizes;
+    public ShoeSizeAndAmount[] sizes;
+
+    public static Shelf Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void OnValidate()
     {
@@ -56,7 +63,11 @@ public class Shelf : MonoBehaviour
         {
             shoes[i].Destroy();
         }
-        
+
+        ShoesGivenManager.Instance.sizesLeft = sizes;
+        ShoesGivenManager.Instance.sizesGiven = sizes.Select(s =>  new ShoeSizeAndAmount(s.size, 0)).ToArray();
+
+
 
     }
 
@@ -68,4 +79,10 @@ public class ShoeSizeAndAmount
 {
     public int size;
     public int amount;
+
+    public ShoeSizeAndAmount(int size, int amount)
+    {
+        this.size = size;
+        this.amount = amount;
+    }
 }

@@ -8,7 +8,7 @@ public class NoMovementJeff : MonoBehaviour
     private Animator _animator;
     
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         _animator = GetComponent<Animator>();
         _animator.SetFloat("Forward", 0);

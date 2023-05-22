@@ -579,6 +579,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62534bfaec2560641937137446efaf8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sizesLeft: []
+  sizesGiven: []
+  chanceReturnPerPair: 1
 --- !u!1 &119368799
 GameObject:
   m_ObjectHideFlags: 0
@@ -5334,7 +5337,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh24232
+  m_Name: pb_Mesh24248
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
