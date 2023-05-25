@@ -30,7 +30,7 @@ public class GiveBox : MonoBehaviour
         set
         {
             _isReturningShoe = value;
-            ActivateCustome(IsCustomerThere());
+            ActivateCustomer(IsCustomerThere());
         }
     }
     
@@ -48,7 +48,7 @@ public class GiveBox : MonoBehaviour
                 CheckShelfbox(shelfbox);
             }
             
-            ActivateCustome(IsCustomerThere());
+            ActivateCustomer(IsCustomerThere());
 
             textShow.text = _sizeRequest.ToString();
             
@@ -70,6 +70,12 @@ public class GiveBox : MonoBehaviour
             shelfbox.OnPickableChange += PickableChange;
         }
 
+        StartMenu.Instance.onGameStart += onGameStart;
+
+    }
+
+    void onGameStart()
+    {
         Invoke(nameof(ReappearRandomly), 0.5f);
         
         InvokeRepeating(nameof(CheckToAppear), 1f , timeBetweenChecks);
@@ -218,7 +224,7 @@ public class GiveBox : MonoBehaviour
             ShelfBox shelfBox = shelfBoxes[i];
             shelfBox.SetInactiveMaterial(invisibleMaterial);
         }
-        ActivateCustome(false);
+        ActivateCustomer(false);
     }
 
 
@@ -227,7 +233,7 @@ public class GiveBox : MonoBehaviour
         return shelfBoxes.All(s => s.isCorrectlySet);
     }
 
-    private void ActivateCustome(bool isActive)
+    private void ActivateCustomer(bool isActive)
     {
         customer.SetActive(isActive);
         foreach (ShelfBox shelfBox in shelfBoxes)

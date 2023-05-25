@@ -16,7 +16,10 @@ public class ShoesGivenManager : MonoBehaviour
     public ShoeSizeAndAmount[] sizesGiven;
 
      [SerializeField] private float chanceReturnPerPair = 0.1f;
-    
+
+     [HideInInspector] public int shoesGiven;
+     [HideInInspector] public int shoesReturn;
+     
     
     private void Awake()
     {
@@ -35,7 +38,7 @@ public class ShoesGivenManager : MonoBehaviour
         
 
         sizesGiven.First(s => s.size == shoeSize).amount += 1;
-
+        shoesGiven++;
     }
     
     public Pickable RemoveShoeFromPlayzone(int shoeSize)
@@ -47,6 +50,7 @@ public class ShoesGivenManager : MonoBehaviour
         sizesLeft.First(s => s.size == shoeSize).amount += 1;
         sizesGiven.First(s => s.size == shoeSize).amount -= 1;
         return pickableAndSize.pickable;
+        shoesReturn++;
     }
 
     public bool IsSomeoneReturningShoes()

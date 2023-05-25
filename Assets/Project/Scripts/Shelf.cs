@@ -32,6 +32,11 @@ public class Shelf : MonoBehaviour
 
     private void Start()
     {
+        StartMenu.Instance.onGameStart += RandomizeShelf;
+    }
+
+    private void RandomizeShelf()
+    {
         Shoe[] shoes = GetComponentsInChildren<Shoe>();
 
         shoes.Shuffle();
