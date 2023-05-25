@@ -49,8 +49,8 @@ public class ShoesGivenManager : MonoBehaviour
         pickableAndSize.pickable.pickTransform.gameObject.SetActive(true);
         sizesLeft.First(s => s.size == shoeSize).amount += 1;
         sizesGiven.First(s => s.size == shoeSize).amount -= 1;
-        return pickableAndSize.pickable;
         shoesReturn++;
+        return pickableAndSize.pickable;
     }
 
     public bool IsSomeoneReturningShoes()
