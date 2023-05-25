@@ -12,8 +12,8 @@ public class GiveBox : MonoBehaviour
     [SerializeField] private Material validMaterial;
 
     [SerializeField] private GameObject customer;
-    
-    
+
+
     [SerializeField] private ShelfBox[] shelfBoxes;
 
     [SerializeField] private float resetChanceToAppear = 10f;
@@ -23,6 +23,8 @@ public class GiveBox : MonoBehaviour
 
     [SerializeField] private TextMeshPro textShow;
 
+
+    private bool _customerWaitingToBeInstantiated;
     private bool _isReturningShoe;
     public bool IsReturningShoe
     {
@@ -33,33 +35,30 @@ public class GiveBox : MonoBehaviour
             ActivateCustomer(IsCustomerThere());
         }
     }
-    
+
     private int _sizeRequest;
     public int SizeRequest
     {
         get { return _sizeRequest; }
         set
         {
-
             _sizeRequest = value;
 
             foreach (ShelfBox shelfbox in shelfBoxes)
             {
                 CheckShelfbox(shelfbox);
             }
-            
+
             ActivateCustomer(IsCustomerThere());
 
             textShow.text = _sizeRequest.ToString();
-            
+
             if (_sizeRequest == 0)
             {
                 textShow.text = "";
             }
         }
     }
-
-
 
 
     // Start is called before the first frame update
@@ -71,16 +70,15 @@ public class GiveBox : MonoBehaviour
         }
 
         StartMenu.Instance.onGameStart += onGameStart;
-
     }
 
     void onGameStart()
     {
-        Invoke(nameof(ReappearRandomly), 0.5f);
-        
-        InvokeRepeating(nameof(CheckToAppear), 1f , timeBetweenChecks);
+        Invoke(nameof(ReappearRandomly), 0.1f);
+
+        InvokeRepeating(nameof(CheckToAppear), 1f, timeBetweenChecks);
     }
-    
+
     public void PickableChange(ShelfBox shelfBox)
     {
         CheckShelfbox(shelfBox);
@@ -101,7 +99,7 @@ public class GiveBox : MonoBehaviour
                 shelfbox.SetInactiveMaterial(validMaterial);
                 shelfbox.isCorrectlySet = true;
             }
-            
+
             if (AreShoesRight())
             {
                 LeaveAfterPlay();
@@ -112,10 +110,10 @@ public class GiveBox : MonoBehaviour
             if (NoShoeRequest())
             {
                 shelfbox.SetInactiveMaterial(invisibleMaterial);
-            }else if (IsInvalidShoe(shelfbox))
+            }
+            else if (IsInvalidShoe(shelfbox))
             {
                 shelfbox.SetInactiveMaterial(invalidMaterial);
-
             }
             else
             {
@@ -128,8 +126,6 @@ public class GiveBox : MonoBehaviour
                 LeaveWithShoes();
             }
         }
-        
-
     }
 
     private bool IsRequestingShoe() => !NoShoeRequest();
@@ -149,8 +145,6 @@ public class GiveBox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        
         if (Input.GetKeyDown(KeyCode.A))
         {
             RequestShoe();
@@ -160,7 +154,7 @@ public class GiveBox : MonoBehaviour
 
     private void CheckToAppear()
     {
-        if (IsCustomerThere() || Player.Instance.IsLookingForward()) return;
+        if (IsCustomerThere()) return;
 
         ReappearRandomly();
     }
@@ -169,12 +163,20 @@ public class GiveBox : MonoBehaviour
     {
         float rngNumber = Random.Range(0, 100f);
         // Debug.Log($"RNG  num={rngNumber}, chance={chanceToAppear}");
-        if (rngNumber < chanceToAppear)
+        if (rngNumber <= chanceToAppear || _customerWaitingToBeInstantiated)
         {
-            RequestShoe();
+            if (Player.Instance.IsLookingForward())
+            {
+                _customerWaitingToBeInstantiated = true;
+            }
+            else
+            {
+                RequestShoe();
+            }
         }
         else
         {
+            _customerWaitingToBeInstantiated = false;
             chanceToAppear *= (1 + increasingChance);
         }
     }
@@ -191,15 +193,11 @@ public class GiveBox : MonoBehaviour
                 shelfBoxes[i].LeavePickObjectOnShelfBox(pickables[i]);
                 CheckShelfbox(shelfBoxes[i]);
             }
-
-
-
         }
         else
         {
             SizeRequest = ShoesGivenManager.Instance.RandomSizeToRequest();
         }
-        
     }
 
     private void LeaveWithShoes()
@@ -212,18 +210,18 @@ public class GiveBox : MonoBehaviour
             shelfBox.SetInactiveMaterial(invisibleMaterial);
             shelfBox.RemovePickObjectOnShelfBox();
         }
-
     }
-    
+
     private void LeaveAfterPlay()
     {
         _isReturningShoe = false;
-        
+
         for (int i = shelfBoxes.Length - 1; i >= 0; i--)
         {
             ShelfBox shelfBox = shelfBoxes[i];
             shelfBox.SetInactiveMaterial(invisibleMaterial);
         }
+
         ActivateCustomer(false);
     }
 
